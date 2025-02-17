@@ -10,37 +10,67 @@ import matplotlib.dates as mdates
 warnings.filterwarnings('ignore')
 
 # =============================================================================
-# 1 - Load Dataset & Preprocess
+# 1 - Define Paths
+# =============================================================================
+
+CONTENT_DATA_PATH = "/home/ldelaigue/Documents/Python/AoE_SVD/DATA/CONTENT_RESULTS/"
+PROCESSING_PATH = "/home/ldelaigue/Documents/Python/AoE_SVD/DATA/PROCESSING/"
+FIGS_PATH = "/home/ldelaigue/Documents/Python/AoE_SVD/FIGS/"
+
+for path in [CONTENT_DATA_PATH, PROCESSING_PATH, FIGS_PATH]:
+    if not os.path.exists(path):
+        os.makedirs(path)
+        print(f"Created directory: {path}")
+
+print("Directories checked.")
+
+# =============================================================================
+# 2 - Load Dataset
 # =============================================================================
 
 print("Loading dataset...")
-ds = xr.open_dataset("/home/ldelaigue/Documents/Python/AoE_SVD/DATA/CONTENT_RESULTS/CONTENT_DIC_v2-1.nc", chunks={'time': 227, 'lat': 45, 'lon': 45})
+ds = xr.open_dataset(CONTENT_DATA_PATH + 'CONTENT_DIC_v2-1.nc')
+print("Dataset loaded.")
 
-# Load Total Alkalinity Data
-print("Loading Total Alkalinity data...")
-TA = xr.open_dataset("/home/ldelaigue/Documents/Python/AoE_SVD/DATA/CONTENT_RESULTS/CONTENT_AT_v2-1.nc", chunks={'time': 227, 'lat': 45, 'lon': 45})
-ds['TA'] = TA['AT']
-ds['TA_sigma'] = TA['AT_sigma']
-del TA  # Free memory
+# Load Alkalinity Data
+# print("Loading alkalinity dataset...")
+# TA = xr.open_dataset(CONTENT_DATA_PATH + 'CONTENT_AT_v2-1.nc')
+# ds['TA'] = TA['AT']
+# ds['TA_sigma'] = TA['AT_sigma']
+# print("Alkalinity data loaded.")
 
-# Compute Absolute Salinity & Potential Temperature
+# Subset Dataset
+# print("Subsetting dataset to 20 pixels...")
+# ds = ds.isel(lat=slice(0, 20), lon=slice(0, 20))
+# print("Subset complete.")
+
+# Compute Absolute Salinity and Potential Temperature
+print("Calculating absolute salinity and potential temperature...")
 ds["salinity_absolute"] = gsw.conversions.SA_from_SP(ds["sal"], ds["pres"], ds["lon"], ds["lat"])
 ds["theta"] = gsw.conversions.pt0_from_t(ds["salinity_absolute"], ds["temp"], ds["pres"])
-
-# Calculate AOU
 ds["aou"] = ks.parameterisations.aou_GG92(oxygen=ds["oxy"], temperature=ds["theta"], salinity=ds["sal"])[0]
-ds["aou_sigma"] = ds["uncer"]
+ds['density'] = gsw.density.rho(ds['salinity_absolute'], ds['theta'], ds['pres'])
+print("Salinity and temperature calculations complete.")
 
-# Compute Density
-ds["density"] = gsw.density.rho(ds['salinity_absolute'], ds['theta'], ds['pres'])
+# Rename Variables
+ds = ds.rename({
+    'uncer': 'aou_sigma',
+})
+
+
+ds = ds[['aou', 'aou_sigma', 'CT', 'CT_sigma', 'density']] # 'TA', 'TA_uncertainty'
 
 # =============================================================================
-# 2 - Convert Time to Matplotlib Numeric Format
+# 3 - Convert Time to Matplotlib Numeric Format (Before Analysis)
 # =============================================================================
 
 print("Converting time to numeric format...")
-ds = ds.assign_coords(time=("time", mdates.date2num(ds["time"].values)))  # Keeps time in days
+
+# Convert time to Matplotlib datenum (keeps time in days)
+ds = ds.assign_coords(time=("time", mdates.date2num(ds["time"].values)))
+
 print("Time conversion complete.")
+# print("New time values:", ds["time"].values)  # Debugging
 
 # =============================================================================
 # 3 - Monte Carlo Setup
@@ -72,7 +102,7 @@ for i in range(1, num_iterations + 1):
     # Generate perturbed dataset
     mc_sample = ds.copy(deep=True)
     mc_sample['CT'] += rng.normal(0, ds['CT_sigma'])
-    mc_sample['TA'] += rng.normal(0, ds['TA_sigma'])
+    # mc_sample['TA'] += rng.normal(0, ds['TA_sigma'])
     mc_sample['aou'] += rng.normal(0, ds['aou_sigma'])
     
     # Perturb Constants
@@ -84,8 +114,8 @@ for i in range(1, num_iterations + 1):
 
     # Compute DIC Components with Perturbed Constants
     trend_ds['DIC_nat'] = (-1 * sp_constant_aou) * trend_ds['aou_polyfit_coefficients']
-    trend_ds['DIC_carb'] = 0.5 * (trend_ds['TA_polyfit_coefficients'] - cp_constant * trend_ds['aou_polyfit_coefficients'])
-    trend_ds['DIC_anth'] = trend_ds['CT_polyfit_coefficients'] - (trend_ds['DIC_nat'] + trend_ds['DIC_carb'])
+    # trend_ds['DIC_carb'] = 0.5 * (trend_ds['TA_polyfit_coefficients'] - cp_constant * trend_ds['aou_polyfit_coefficients'])
+    # trend_ds['DIC_anth'] = trend_ds['CT_polyfit_coefficients'] - (trend_ds['DIC_nat'] + trend_ds['DIC_carb'])
 
     # **Depth Integration Process**
     trend_ds['DIC_nat_mol_m3'] = (trend_ds['DIC_nat'] / 1e6) * ds['density']  # Convert to mol/m³
