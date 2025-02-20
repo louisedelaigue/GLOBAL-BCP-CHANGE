@@ -2,9 +2,8 @@ import os
 import warnings
 import numpy as np
 import xarray as xr
-import gsw
+import gsw  # Gibbs SeaWater (GSW) Oceanographic Toolbox of TEOS-10
 import koolstof as ks
-import matplotlib.dates as mdates
 
 warnings.filterwarnings('ignore')  # Suppress warnings
 
@@ -21,10 +20,20 @@ ds = xr.open_dataset(
 print("Dataset loaded.")
 
 # Subset Dataset (optional, adjust as needed)
-print("Ignoring subsetting...")
-# print("Subsetting dataset to 20 pixels...")
-# ds = ds.isel(lat=slice(0, 20), lon=slice(0, 20))
-# print("Subset complete.")
+print("Subsetting dataset to 20 pixels...")
+ds = ds.isel(lat=slice(0, 20), lon=slice(0, 20))
+print("Subset complete.")
+
+# Define custom pressure grid
+print("Defining custom pressure grid for interpolation...")
+pres_fine_above_500 = ds.pres.values[ds.pres.values <= 500]  # Keep original values ≤ 500 dbar
+pres_fine_below_500 = np.arange(500, ds.pres.values.max(), 20)  # 20m resolution from 500 dbar onward
+pres_highres = np.concatenate((pres_fine_above_500, pres_fine_below_500))  # Combine grids
+
+# Interpolate variables to the new pressure grid
+print("Interpolating dataset onto new pressure grid...")
+ds = ds.interp(pres=pres_highres, method="linear")
+print("Interpolation complete.")
 
 # Compute Absolute Salinity & Potential Temperature
 print("Calculating absolute salinity and potential temperature...")
@@ -38,16 +47,15 @@ ds["aou_sigma"] = ds["uncer"]
 # Compute Density
 ds["density"] = gsw.density.rho(ds['salinity_absolute'], ds['theta'], ds['pres'])
 
-ds = ds[['aou', 'aou_sigma', 'density']]
-
 # Compute DIC Components
 print("Calculating DIC components...")
-sp_constant_aou = (117 / -170)  # Soft-tissue pump constant
-ds['DIC_nat'] = (-1 * sp_constant_aou) * ds['aou']
+sp_constant_aou_mean = 117 / -170  # Soft-tissue pump constant
+sigma_sp = 0.092  # Uncertainty for soft-tissue pump
+ds['DIC_nat'] = (-1 * sp_constant_aou_mean) * ds['aou']
 print("DIC calculations complete.")
 
 # =============================================================================
-# 2. Load & Process MLD Data (Masking After Computing DIC Components)
+# 2. Load & Process MLD Data (Masking Above MLD)
 # =============================================================================
 
 print("Loading and interpolating MLD data...")
@@ -56,26 +64,19 @@ mld = xr.open_dataset(
 )
 
 # Shift longitudes in mld to match ds's range of [-180, 180]
-mld = mld.assign_coords(lon=((mld.lon + 180) % 360) - 180)
+mld = mld.assign_coords(lon=((mld.lon + 180) % 360) - 180).sortby('lon')
 
-# Sort the longitudes so they are in ascending order
-mld = mld.sortby('lon')
-
-# Now interpolate the MLD data to match ds' lat/lon grid
-max_mld = mld['mld'].max(dim='time')
+# Interpolate the MLD data to match ds' lat/lon grid
+max_mld = mld['mld'].max(dim='time').interp(lat=ds['lat'], lon=ds['lon'], method='nearest')
 
 del mld
 
-max_mld_interp = max_mld.interp(lat=ds['lat'], lon=ds['lon'], method='nearest')
+# Assign the interpolated MLD values to a new variable in ds
+ds['MLD'] = max_mld
 
 del max_mld
 
-# Assign the interpolated MLD values to a new variable in ds
-ds['MLD'] = max_mld_interp
-
-del max_mld_interp
-
-# Expand MLD to match the dimensions required for comparison (specifically along the 'pres' dimension)
+# Expand MLD to match the dimensions required for comparison (along the 'pres' dimension)
 MLD_expanded = ds['MLD'].expand_dims({'pres': len(ds['pres'])}, axis=1)
 MLD_expanded['pres'] = ds['pres'].values  # Ensure that 'pres' values are correctly assigned
 
@@ -89,21 +90,19 @@ ds_below_mld = ds.where(mask_below_mld)
 
 del ds
 
+print("MLD masking complete. Processing values only below MLD.")
+
 # =============================================================================
 # 3. Monte Carlo Setup
 # =============================================================================
 
-num_iterations = 1000
+num_iterations = 10
 print(f"Running Monte Carlo with {num_iterations} iterations...")
 
-mean_ds = None
-var_ds = None  
-
-# Define Constants & Their Uncertainties
-sp_constant_aou_mean = 117 / -170
-sigma_sp = 0.092  # Uncertainty for soft-tissue pump
-
 rng = np.random.default_rng()
+
+mean_50_depth = None
+var_50_depth = None  
 
 # =============================================================================
 # 4. Monte Carlo Loop
@@ -113,61 +112,62 @@ for i in range(1, num_iterations + 1):
     print(f"Iteration {i}/{num_iterations}")
 
     # Generate perturbed dataset
-    mc_sample = ds_below_mld.copy()  
-    mc_sample['aou'] += rng.normal(0, mc_sample['aou_sigma']) 
+    mc_sample = ds_below_mld.copy(deep=True)
+    mc_sample['aou'] += rng.normal(0, mc_sample['aou_sigma'])
 
-    # Perturb Constant **at the pixel level**
+    # Perturb `DIC_nat` constant
     sp_constant_aou = rng.normal(sp_constant_aou_mean, sigma_sp)
-
-    # Compute DIC_nat with Perturbed Constant
     mc_sample['DIC_nat'] = (-1 * sp_constant_aou) * mc_sample['aou']
 
-    # Convert & Integrate DIC_nat Below MLD
-    mc_sample['DIC_mol_m3'] = (mc_sample['DIC_nat'] / 1e6) * mc_sample['density']
+    # Compute cumulative DIC_nat below MLD
+    mc_sample['DIC_cumulative'] = mc_sample['DIC_nat'].cumsum(dim='pres')
 
-    # Compute pressure differences
-    mc_sample['layer_thickness'] = mc_sample['pres'].diff('pres')
+    # Compute 50% DIC sequestration depth
+    def find_shallowest_depth(pres, cumulative, threshold):
+        mask = cumulative >= threshold
+        return np.min(pres[mask]) if np.any(mask) else np.nan
 
-    # Compute mol/m² using correct thicknesses
-    mc_sample['DIC_mol_per_m2'] = mc_sample['DIC_mol_m3'] * mc_sample['layer_thickness']
+    dic_50_depth = xr.apply_ufunc(
+        find_shallowest_depth,
+        mc_sample['pres'],
+        mc_sample['DIC_cumulative'],
+        mc_sample['DIC_cumulative'].isel(pres=-1) * 0.5,
+        input_core_dims=[['pres'], ['pres'], []],
+        vectorize=True,
+        dask="parallelized",
+        output_dtypes=[float],
+    )
 
-    # Depth-Integrated DIC_nat Below MLD
-    mc_sample['DIC_integrated_below_MLD'] = mc_sample['DIC_mol_per_m2'].sum(dim='pres')
-
-    # Fix: Compute time-based sequestration correctly
-    mc_sample['DIC_monthly_diff'] = mc_sample['DIC_integrated_below_MLD'].diff(dim='time')
-    mc_sample['DIC_nat_sequestration'] = mc_sample['DIC_monthly_diff'].sum(dim='time')
-
-    # Fix: Online Mean and Variance Calculation
-    if i == 1:
-        mean_ds = mc_sample['DIC_nat_sequestration']
-        var_ds = mean_ds * 0  # Initialize variance dataset
+    # Update Online Mean & Variance (Welford's Method)
+    if mean_50_depth is None:
+        mean_50_depth = dic_50_depth
+        var_50_depth = dic_50_depth * 0  # Initialize variance as zeros
     else:
-        delta = mc_sample['DIC_nat_sequestration'] - mean_ds
-        new_mean_ds = mean_ds + delta / i
-        var_ds = ((i - 1) * var_ds + delta * (mc_sample['DIC_nat_sequestration'] - new_mean_ds)) / i
-        mean_ds = new_mean_ds
+        delta = dic_50_depth - mean_50_depth
+        new_mean_50_depth = mean_50_depth + delta / i
+        var_50_depth = ((i - 1) * var_50_depth + delta * (dic_50_depth - new_mean_50_depth)) / i
+        mean_50_depth = new_mean_50_depth
 
 # =============================================================================
 # 5. Compute Final Standard Deviation (AFTER Monte Carlo Loop)
 # =============================================================================
 
-total_std_ds = np.sqrt(var_ds)  # Final standard deviation
+dic_50_depth_uncertainty = np.sqrt(var_50_depth)  # Final standard deviation
 
 # =============================================================================
-# 6. Final Dataset (lat, lon) Only
+# 6. Final Dataset
 # =============================================================================
 
 final_ds = xr.Dataset({
-    'DIC_nat_sequestration': mean_ds,
-    'DIC_nat_sequestration_uncertainty': total_std_ds
+    'DIC_50_depth': mean_50_depth,
+    'DIC_50_depth_uncertainty': dic_50_depth_uncertainty
 })
 
 # =============================================================================
 # 7. Save Results
 # =============================================================================
 
-output_path = "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/03_DIC_sequestration_below_winter_MLD_monte_carlo_online.nc"
+output_path = "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/04_DIC_sequestration_50_depth.nc"
 final_ds.to_netcdf(output_path)
 
 print(f"Monte Carlo simulations completed successfully. File saved: {output_path}")
