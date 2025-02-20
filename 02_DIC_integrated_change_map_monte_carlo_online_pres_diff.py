@@ -37,13 +37,6 @@ print("Loading dataset...")
 ds = xr.open_dataset(CONTENT_DATA_PATH + 'CONTENT_DIC_v2-1.nc')
 print("Dataset loaded.")
 
-# Load Alkalinity Data
-# print("Loading alkalinity dataset...")
-# TA = xr.open_dataset(CONTENT_DATA_PATH + 'CONTENT_AT_v2-1.nc')
-# ds['TA'] = TA['AT']
-# ds['TA_sigma'] = TA['AT_sigma']
-# print("Alkalinity data loaded.")
-
 # Subset Dataset
 print("Ignoring subsetting...")
 # print("Subsetting dataset to 20 pixels...")
@@ -64,10 +57,6 @@ ds = ds.rename({
     'sal': 'salinity',
     'aou': 'AOU',
     'uncer': 'AOU_uncertainty',
-    # 'CT': 'DIC',
-    # 'CT_sigma': 'DIC_uncertainty',
-    # 'TA_sigma': 'TA_uncertainty'
-})
 
 ds = ds[['AOU', 'AOU_uncertainty']] # 'DIC', 'DIC_uncertainty', 'TA', 'TA_uncertainty'
 
@@ -125,8 +114,6 @@ rng = np.random.default_rng()
 for i in range(1, num_iterations + 1):
     print(i)
     mc_sample = ds.copy(deep=True)
-    # mc_sample['DIC'] += rng.normal(0, ds['DIC_uncertainty'])
-    # mc_sample['TA'] += rng.normal(0, ds['TA_uncertainty'])
     mc_sample['AOU'] += rng.normal(0, ds['AOU_uncertainty'])
 
     # Perturb Constants
@@ -134,21 +121,13 @@ for i in range(1, num_iterations + 1):
     cp_constant = rng.normal(cp_constant_mean, sigma_cp)
 
     # Compute depth-integrated rates
-    # dic_rate = compute_slope_integrated(mc_sample, 'DIC')
-    # ta_rate = compute_slope_integrated(mc_sample, 'TA')
     aou_rate = compute_slope_integrated(mc_sample, 'AOU')
 
     soft_pump_aou_change = -sp_constant_aou * aou_rate
-    # carb_pump_change = 0.5 * (ta_rate - cp_constant * aou_rate)
-    # co2_anth_aou_change = dic_rate - (soft_pump_aou_change + carb_pump_change)
 
     iteration_ds = xr.Dataset({
-        # 'DIC_rate': dic_rate,
-        # 'TA_rate': ta_rate,
         'AOU_rate': aou_rate,
         'soft_pump_aou_change': soft_pump_aou_change,
-        # 'carb_pump_change': carb_pump_change,
-        # 'co2_anth_aou_change': co2_anth_aou_change
     })
 
     if i == 1:
