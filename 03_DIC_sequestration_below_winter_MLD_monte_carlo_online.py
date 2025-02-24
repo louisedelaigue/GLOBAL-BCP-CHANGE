@@ -5,6 +5,7 @@ import xarray as xr
 import gsw
 import koolstof as ks
 import matplotlib.dates as mdates
+from scipy.ndimage import gaussian_filter
 
 warnings.filterwarnings('ignore')  # Suppress warnings
 
@@ -38,13 +39,8 @@ ds["aou_sigma"] = ds["uncer"]
 # Compute Density
 ds["density"] = gsw.density.rho(ds['salinity_absolute'], ds['theta'], ds['pres'])
 
+# Only keep vars of interest
 ds = ds[['aou', 'aou_sigma', 'density']]
-
-# Compute DIC Components
-print("Calculating DIC components...")
-sp_constant_aou = (117 / -170)  # Soft-tissue pump constant
-ds['DIC_nat'] = (-1 * sp_constant_aou) * ds['aou']
-print("DIC calculations complete.")
 
 # =============================================================================
 # 2. Load & Process MLD Data (Masking After Computing DIC Components)
@@ -96,14 +92,15 @@ del ds
 num_iterations = 1000
 print(f"Running Monte Carlo with {num_iterations} iterations...")
 
-mean_ds = None
-var_ds = None  
-
 # Define Constants & Their Uncertainties
 sp_constant_aou_mean = 117 / -170
 sigma_sp = 0.092  # Uncertainty for soft-tissue pump
 
 rng = np.random.default_rng()
+
+# Initialize mean and variance datasets
+mean_ds = None
+var_ds = None  
 
 # =============================================================================
 # 4. Monte Carlo Loop
@@ -113,10 +110,21 @@ for i in range(1, num_iterations + 1):
     print(f"Iteration {i}/{num_iterations}")
 
     # Generate perturbed dataset
-    mc_sample = ds_below_mld.copy()  
+    mc_sample = ds_below_mld.copy(deep=True)  
     mc_sample['aou'] += rng.normal(0, mc_sample['aou_sigma']) 
 
-    # Perturb Constant **at the pixel level**
+    # ==== AOU with Gaussian filter
+    # Generate random noise
+    # random_noise_aou = rng.normal(0, ds_below_mld['aou_sigma'])
+    
+    # # Apply Gaussian smoothing before adding noise
+    # smoothed_noise = gaussian_filter(random_noise_aou, sigma=2)
+    
+    # # Add to dataset
+    # mc_sample['aou'] += smoothed_noise
+
+    # ==== CONSTANT
+    # Perturb Constant
     sp_constant_aou = rng.normal(sp_constant_aou_mean, sigma_sp)
 
     # Compute DIC_nat with Perturbed Constant
@@ -134,40 +142,42 @@ for i in range(1, num_iterations + 1):
     # Depth-Integrated DIC_nat Below MLD
     mc_sample['DIC_integrated_below_MLD'] = mc_sample['DIC_mol_per_m2'].sum(dim='pres')
 
-    # Fix: Compute time-based sequestration correctly
-    mc_sample['DIC_monthly_diff'] = mc_sample['DIC_integrated_below_MLD'].diff(dim='time')
-    mc_sample['DIC_nat_sequestration'] = mc_sample['DIC_monthly_diff'].sum(dim='time')
+    # Compute time-based sequestration correctly
+    month_to_month_diff = mc_sample['DIC_integrated_below_MLD'].diff(dim='time')
+    mc_sample['DIC_nat_sequestration'] = month_to_month_diff.sum(dim='time')
 
-    # Fix: Online Mean and Variance Calculation
+    # Store iteration results in a dataset
+    iteration_ds = xr.Dataset({
+        'DIC_nat_sequestration': mc_sample['DIC_nat_sequestration']
+    })
+
+    # Online Mean and Variance Calculation
     if i == 1:
-        mean_ds = mc_sample['DIC_nat_sequestration']
-        var_ds = mean_ds * 0  # Initialize variance dataset
+        mean_ds = iteration_ds
+        var_ds = iteration_ds * 0  # Initialize variance dataset
     else:
-        delta = mc_sample['DIC_nat_sequestration'] - mean_ds
-        new_mean_ds = mean_ds + delta / i
-        var_ds = ((i - 1) * var_ds + delta * (mc_sample['DIC_nat_sequestration'] - new_mean_ds)) / i
-        mean_ds = new_mean_ds
+        # Extract DataArrays instead of working directly with Dataset
+        delta = iteration_ds['DIC_nat_sequestration'] - mean_ds['DIC_nat_sequestration']
+        new_mean_ds = mean_ds['DIC_nat_sequestration'] + delta / i
+        var_ds = ((i - 1) * var_ds['DIC_nat_sequestration'] + delta * (iteration_ds['DIC_nat_sequestration'] - new_mean_ds)) / i
+
+        # Wrap back into a Dataset
+        mean_ds = xr.Dataset({'DIC_nat_sequestration': new_mean_ds})
+        var_ds = xr.Dataset({'DIC_nat_sequestration': var_ds})
+
+# Normalize mean and variance after all iterations
+total_std_ds = np.sqrt(var_ds)  # Compute standard deviation
 
 # =============================================================================
-# 5. Compute Final Standard Deviation (AFTER Monte Carlo Loop)
-# =============================================================================
-
-total_std_ds = np.sqrt(var_ds)  # Final standard deviation
-
-# =============================================================================
-# 6. Final Dataset (lat, lon) Only
+# 5. Save Results
 # =============================================================================
 
 final_ds = xr.Dataset({
-    'DIC_nat_sequestration': mean_ds,
-    'DIC_nat_sequestration_uncertainty': total_std_ds
+    'DIC_nat_sequestration': mean_ds['DIC_nat_sequestration'],
+    'DIC_nat_sequestration_uncertainty': total_std_ds['DIC_nat_sequestration']
 })
 
-# =============================================================================
-# 7. Save Results
-# =============================================================================
-
-output_path = "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/03_DIC_sequestration_below_winter_MLD_monte_carlo_online.nc"
+output_path = "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/03_DIC_sequestration_below_winter_MLD_monte_carlo_online_1000_iterations.nc"
 final_ds.to_netcdf(output_path)
 
 print(f"Monte Carlo simulations completed successfully. File saved: {output_path}")
