@@ -1,2 +1,2 @@
-# The dynamic neutrality of the biological carbon pump
+# Ongoing spatial redistribution of a globally stable ocean biological carbon pump
  
