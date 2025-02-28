@@ -1,7 +1,8 @@
-### This study is currently under review for publication in Nature Geoscience.
-
 # Ongoing spatial redistribution of a globally stable ocean biological carbon pump
- 
+
+> [!IMPORTANT]  
+> This study is currently under review for publication in Nature Geoscience.
+
 <img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
 
 This repository includes the raw data and scripts used to analyze and plot data for the study:
@@ -21,7 +22,7 @@ This repository includes the raw data and scripts used to analyze and plot data 
 *Corresponding author: Louise Delaigue ([louise.delaigue@imev-mer.fr](mailto:louise.delaigue@imev-mer.fr))*
 
 ## Abstract
-The ocean’s dissolved inorganic carbon (DIC) reservoir is a key component of the global carbon cycle. Over recent decades, DIC has increased due to rising anthropogenic CO2, while the biological carbon pump (BCP) — which transfers carbon from the surface to the deep ocean — remains poorly quantified in contribution to DIC changes. Using the novel GOBAI-O2 product and state-of-the-art machine learning algorithms, we reconstructed the global DIC distribution from 2004 to 2022 and decomposed it into DIC<sub>soft</sub> (BCP contribution), DIC<sub>carb</sub> (carbonate counter pump), and DIC<sub>anth</sub> (anthropogenic CO<sub>2</sub>). We report a significant DIC increase, with surface waters rising ~1.0 ± 0.23 μmol kg⁻¹ yr⁻¹, primarily driven by DIC<sub>anth</sub> (>90% of the increase). While DICsoft showed no significant trend globally, we observed strong regional patterns. Climate-driven BCP vertical and horizontal shifts altered carbon sequestration, with some regions subject to enhanced carbon storage at shallower depths (i.e., stored on shorter timescales), while others experienced intensified sequestration at greater depths (i.e., stored on longer timescales). Although this redistribution maintains a near-neutral BCP global trend, locally, strong regional changes could disrupt deep-water ecosystems, carbon storage in the ocean interior, and the BCP long-term role in the Earth's climate regulation. A globally stable but spatially dynamic BCP in response to environmental change may have persisted throughout Earth history and should be considered in sedimentary archives.
+The ocean’s dissolved inorganic carbon (DIC) reservoir is a key component of the global carbon cycle. Over recent decades, DIC has increased due to rising anthropogenic CO<sub>2</sub>, while the biological carbon pump (BCP) — which transfers carbon from the surface to the deep ocean — remains poorly quantified in contribution to DIC changes. Using the novel GOBAI-O<sub>2</sub> product and state-of-the-art machine learning algorithms, we reconstructed the global DIC distribution from 2004 to 2022 and decomposed it into DIC<sub>soft</sub> (BCP contribution), DIC<sub>carb</sub> (carbonate counter pump), and DIC<sub>anth</sub> (anthropogenic CO<sub>2</sub>). We report a significant DIC increase, with surface waters rising ~1.0 ± 0.23 μmol kg⁻¹ yr⁻¹, primarily driven by DIC<sub>anth</sub> (>90% of the increase). While DICsoft showed no significant trend globally, we observed strong regional patterns. Climate-driven BCP vertical and horizontal shifts altered carbon sequestration, with some regions subject to enhanced carbon storage at shallower depths (i.e., stored on shorter timescales), while others experienced intensified sequestration at greater depths (i.e., stored on longer timescales). Although this redistribution maintains a near-neutral BCP global trend, locally, strong regional changes could disrupt deep-water ecosystems, carbon storage in the ocean interior, and the BCP long-term role in the Earth's climate regulation. A globally stable but spatially dynamic BCP in response to environmental change may have persisted throughout Earth history and should be considered in sedimentary archives.
 
 
 ## Analysis
