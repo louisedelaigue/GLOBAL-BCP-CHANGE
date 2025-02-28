@@ -1,6 +1,6 @@
 # Ongoing spatial redistribution of a globally stable ocean biological carbon pump
  
-<img src="figs/Figure2a_with_uncertainty.png" width="682" height="303" />
+<img src="figs/Figure2a_with_uncertainty.png" width="682" height="500" />
 
 This repository includes the raw data and scripts used to analyze and plot this data for the study:
 
