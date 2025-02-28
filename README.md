@@ -6,7 +6,7 @@ This repository includes the raw data and scripts used to analyze and plot this 
 
 **Ongoing spatial redistribution of a globally stable ocean biological carbon pump**
 
-*L. Delaigue<sup>1, 3</sup>\*, R. Sauzède<sup>3</sup>, H. Claustre<sup>3</sup>, G-J Reichart<sup>1,2</sup>, M. P. Humphreys<sup>1</sup> and O. Sulpis<sup>4</sup>, 
+*L. Delaigue<sup>1, 3</sup>\*, R. Sauzède<sup>3</sup>, H. Claustre<sup>3</sup>, G-J Reichart<sup>1,2</sup>, M. P. Humphreys<sup>1</sup> and O. Sulpis<sup>4</sup>*
 
 <sup>1</sup>Department of Ocean Systems (OCS), NIOZ Royal Netherlands Institute for Sea Research, PO Box 59, 1790 AB Den Burg (Texel), the Netherlands
 
