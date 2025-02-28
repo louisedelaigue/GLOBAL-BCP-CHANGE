@@ -5,11 +5,11 @@
 
 <img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
 
-This repository includes the raw data and scripts used to analyze and plot data for the study:
+#### This repository includes the raw data and scripts used to analyze and plot data for the study:
 
-**Ongoing spatial redistribution of a globally stable ocean biological carbon pump**
+### **Ongoing spatial redistribution of a globally stable ocean biological carbon pump**
 
-*L. Delaigue<sup>1, 3</sup>\*, R. Sauzède<sup>3</sup>, H. Claustre<sup>3</sup>, G-J Reichart<sup>1,2</sup>, M. P. Humphreys<sup>1</sup> and O. Sulpis<sup>4</sup>*
+#### *L. Delaigue<sup>1, 3</sup>\, R. Sauzède<sup>3</sup>, H. Claustre<sup>3</sup>, G-J Reichart<sup>1,2</sup>, M. P. Humphreys<sup>1</sup> and O. Sulpis<sup>4</sup>*
 
 <sup>1</sup>Department of Ocean Systems (OCS), NIOZ Royal Netherlands Institute for Sea Research, PO Box 59, 1790 AB Den Burg (Texel), the Netherlands
 
@@ -28,4 +28,5 @@ The ocean’s dissolved inorganic carbon (DIC) reservoir is a key component of t
 ## Analysis
 A detailed explanation of each script is available in the "Figures and numbers" Jupyter notebook of the repository, along with the resulting figures and statistics. Additionally, interactive plots in Plotly allow for a more detailed exploration of the numbers.
 
-Please note that this repository does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, these files can be made available upon request.
+> [!NOTE]  
+> This repository does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, these files can be made available upon request, along with the GCC-DIC file.
