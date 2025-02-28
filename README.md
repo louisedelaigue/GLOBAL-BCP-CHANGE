@@ -29,4 +29,4 @@ The ocean’s dissolved inorganic carbon (DIC) reservoir is a key component of t
 A detailed explanation of each script is available in the "Figures and numbers" Jupyter notebook of the repository, along with the resulting figures and statistics. Additionally, interactive plots in Plotly allow for a more detailed exploration of the numbers.
 
 > [!NOTE]  
-> This repository does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, these files can be made available upon request.
+> This repository does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, these files can be made available upon request, along with the GCC-DIC file.
