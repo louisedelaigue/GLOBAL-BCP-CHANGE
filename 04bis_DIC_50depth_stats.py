@@ -206,7 +206,7 @@ def analyze_dic_depth(ds):
                 data_vars["P_value"][1][i, j] = p_value
                 
             except Exception as e:
-                print(f"⚠️ Error processing lat {lat}, lon {lon}: {e}")
+                print(f"sError processing lat {lat}, lon {lon}: {e}")
     
     summary_ds = xr.Dataset(
         {key: (dims, data) for key, (dims, data) in data_vars.items()},
