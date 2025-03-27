@@ -15,7 +15,7 @@
 
 <sup>2</sup>Department of Earth Sciences, Utrecht University, Utrecht, the Netherlands
 
-<sup>3</sup>Laboratoire d’Océanographie de Villefranche (CNRS-SU), 06230 Villefranche-Sur-Mer, France
+<sup>3</sup>Sorbonne Université, CNRS, Laboratoire d'Océanographie de Villefranche, LOV, 06230 Villefranche-sur-Mer, France
 
 <sup>4</sup>CEREGE, Aix Marseille Univ, CNRS, IRD, INRAE, Collège de France, Aix-en-Provence, France
 
