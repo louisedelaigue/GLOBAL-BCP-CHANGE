@@ -1,14 +1,5 @@
 # Spatial redistribution of a globally constant marine biological carbon pump
 
-> [!IMPORTANT]  
-> This study is currently under review for publication in Nature Geoscience.
-
-<img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
-
-#### This repository includes the raw data and scripts used to analyze and plot data for the study:
-
-### **Spatial redistribution of a globally constant marine biological carbon pump**
-
 #### **L. Delaigue<sup>1, 2</sup>\, R. Sauzède<sup>3</sup>, O. Sulpis<sup>4</sup>, P. W. Boyd<sup>5</sup>, H. Claustre<sup>2</sup>, G-J Reichart<sup>1, 6</sup> and M. P. Humphreys<sup>1</sup>**
 
 <details>
@@ -22,6 +13,13 @@
 <sup>6</sup>Department of Earth Sciences, Utrecht University, Utrecht, the Netherlands  
 
 </details>
+
+> [!IMPORTANT]  
+> This study is currently under review for publication in Nature Geoscience.
+
+<img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
+
+#### This repository includes the raw data and scripts used to analyze and plot data for this study.
 
 
 *Corresponding author: Louise Delaigue ([louise.delaigue@imev-mer.fr](mailto:louise.delaigue@imev-mer.fr))*
