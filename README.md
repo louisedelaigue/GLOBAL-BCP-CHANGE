@@ -1,5 +1,3 @@
-## This repository contains the raw data and analysis scripts used to produce the results and figures presented in the study:
-
 ## Spatial redistribution of a globally constant marine biological carbon pump
 
 #### **L. Delaigue<sup>1, 2</sup>\, R. Sauzède<sup>3</sup>, O. Sulpis<sup>4</sup>, P. W. Boyd<sup>5</sup>, H. Claustre<sup>2</sup>, G-J Reichart<sup>1, 6</sup> and M. P. Humphreys<sup>1</sup>**
