@@ -33,8 +33,9 @@ Marine dissolved inorganic carbon (DIC) is a key component of the global ocean c
 ## Analysis
 A detailed explanation of each script is available in the "Figures and numbers" Jupyter notebook of the repository, along with the resulting figures and statistics. Additionally, interactive plots in Plotly allow for a more detailed exploration of the numbers.
 
+> [!NOTE]  
+> This repository does not include files 04_DIC_sequestered_50_depth_1000_iterations.nc and 05_DIC_soft_with_MLD.nc. This repository also does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, all these files can be made available upon request, along with the GCC-DIC file.
+
 ## License
 This project is licensed under the GNU General Public License v3.0 – see the LICENSE file for details.
 
-> [!NOTE]  
-> This repository does not include files 04_DIC_sequestered_50_depth_1000_iterations.nc and 05_DIC_soft_with_MLD.nc. This repository also does not include the application of the CANYON-B and CONTENT algorithms on the GOBAI-O<sub>2</sub> product due to the large file sizes. However, all these files can be made available upon request, along with the GCC-DIC file.
