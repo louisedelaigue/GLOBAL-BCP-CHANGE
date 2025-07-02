@@ -135,7 +135,7 @@ import matplotlib.dates as mdates
 
 print("Loading dataset...")
 ds = xr.open_dataset(
-    "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/04_DIC_sequestered_50_depth.nc"
+    "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/04_DIC_sequestered_50_depth_1000_iterations.nc"
 )
 print("Dataset loaded.")
 
@@ -206,7 +206,7 @@ def analyze_dic_depth(ds):
                 data_vars["P_value"][1][i, j] = p_value
                 
             except Exception as e:
-                print(f"sError processing lat {lat}, lon {lon}: {e}")
+                print(f"⚠️ Error processing lat {lat}, lon {lon}: {e}")
     
     summary_ds = xr.Dataset(
         {key: (dims, data) for key, (dims, data) in data_vars.items()},

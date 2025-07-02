@@ -9,6 +9,7 @@ import koolstof as ks
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from tqdm import tqdm
 
 warnings.filterwarnings('ignore')
 
@@ -44,10 +45,30 @@ ds['TA'] = TA['AT']
 ds['TA_sigma'] = TA['AT_sigma']
 print("Alkalinity data loaded.")
 
-# Subset Dataset
-# print("Subsetting dataset to 20 pixels...")
-# ds = ds.isel(lat=slice(0, 20), lon=slice(0, 20))
-# print("Subset complete.")
+# =============================================================================
+# Subset Dataset to 4 Specific Points
+# =============================================================================
+
+print("Subsetting dataset to 4 specific points...")
+
+points = {
+    'pos-pos': {'lat': -55, 'lon': 0, 'label': 'Positive-positive (○)'},
+    'neg-neg': {'lat': 58, 'lon': -51, 'label': 'Negative-negative (□)'},
+    'pos-neg': {'lat': 31.5, 'lon': 136.5, 'label': 'Positive-negative (△)'},
+    'neg-pos': {'lat': 63.5, 'lon': -57.5, 'label': 'Negative-positive (◇)'},
+}
+
+# Create a new dataset with only the selected points
+selected_points = []
+for key, val in points.items():
+    point_ds = ds.sel(lat=val['lat'], lon=val['lon'], method='nearest')
+    point_ds = point_ds.expand_dims({'point': [key]})  # add new dimension for point labeling
+    selected_points.append(point_ds)
+
+# Combine all selected points into one dataset
+ds = xr.concat(selected_points, dim='point')
+
+print("Subset to specific points complete.")
 
 # Compute Absolute Salinity and Potential Temperature
 print("Calculating absolute salinity and potential temperature...")
@@ -114,8 +135,7 @@ def compute_slope(ds, var):
 rng = np.random.default_rng()
 
 # Monte Carlo Loop (Iterative Mean & Variance)
-for i in range(1, num_iterations + 1):
-    print(i)
+for i in tqdm(range(1, num_iterations + 1), desc="Monte Carlo Iterations", unit="iter"):
     mc_sample = ds.copy(deep=True)
     mc_sample['DIC'] += rng.normal(0, ds['DIC_uncertainty'])
     mc_sample['TA'] += rng.normal(0, ds['TA_uncertainty'])
@@ -156,23 +176,23 @@ std_ds = np.sqrt(var_ds)  # No division by num_iterations
 print("Monte Carlo simulations complete.")
 
 # =============================================================================
-# 5 - Compute Global Mean with Monte Carlo
+# 5 - Merge Uncertainties into Original Dataset and Save
 # =============================================================================
 
-print("Computing global mean across lat/lon...")
-weights = np.cos(np.deg2rad(ds.lat)) # to account for the Earth's geometry
-mean_ds = mean_ds.weighted(weights).mean(dim=['lat', 'lon'])
-std_ds = np.sqrt((std_ds ** 2).weighted(weights).mean(dim=['lat', 'lon'])) # propagate uncertainty
-print("Global mean computation complete.")
+print("Merging Monte Carlo results and saving dataset...")
 
-# =============================================================================
-# 6 - Save Results
-# =============================================================================
-
+# Rename std_ds variables for clarity
 for var in std_ds.data_vars:
-    mean_ds[f"{var}_uncertainty"] = std_ds[var]
+    std_ds = std_ds.rename({var: f"{var}_uncertainty"})
 
-mean_ds.to_netcdf("/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/01_DIC_globally_averaged_change_monte_carlo_online.nc")
-print("Merge and save complete.")
+# Combine original data, Monte Carlo means, and uncertainties
+ds_with_uncertainty = xr.merge([ds, mean_ds, std_ds])
 
+# Save to NetCDF
+output_path = "/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/06_DIC_global_change_scenarios.nc"
+ds_with_uncertainty.to_netcdf(output_path)
+
+print(f"Dataset with Monte Carlo results saved to:\n{output_path}")
 print("Processing complete!")
+
+

@@ -45,31 +45,64 @@ ds = ds[['aou', 'aou_sigma', 'density']]
 # =============================================================================
 # 2. Load & Process MLD Data (Masking After Computing DIC Components)
 # =============================================================================
+## OLD MLD CLIMATOLOGY
+# print("Loading and interpolating MLD data...")
+# mld = xr.open_dataset(
+#     "/home/ldelaigue/Documents/Python/AoE_SVD/DATA/mld_DR003_c1m_reg2.0.nc"
+# )
 
-print("Loading and interpolating MLD data...")
-mld = xr.open_dataset(
-    "/home/ldelaigue/Documents/Python/AoE_SVD/DATA/mld_DR003_c1m_reg2.0.nc"
-)
+# # Shift longitudes in mld to match ds's range of [-180, 180]
+# mld = mld.assign_coords(lon=((mld.lon + 180) % 360) - 180)
 
-# Shift longitudes in mld to match ds's range of [-180, 180]
-mld = mld.assign_coords(lon=((mld.lon + 180) % 360) - 180)
+# # Sort the longitudes so they are in ascending order
+# mld = mld.sortby('lon')
 
-# Sort the longitudes so they are in ascending order
-mld = mld.sortby('lon')
+# # Now interpolate the MLD data to match ds' lat/lon grid
+# max_mld = mld['mld'].max(dim='time')
 
-# Now interpolate the MLD data to match ds' lat/lon grid
-max_mld = mld['mld'].max(dim='time')
+# del mld
 
-del mld
+# max_mld_interp = max_mld.interp(lat=ds['lat'], lon=ds['lon'], method='nearest')
 
-max_mld_interp = max_mld.interp(lat=ds['lat'], lon=ds['lon'], method='nearest')
+# del max_mld
 
-del max_mld
+# # Assign the interpolated MLD values to a new variable in ds
+# ds['MLD'] = max_mld_interp
 
-# Assign the interpolated MLD values to a new variable in ds
-ds['MLD'] = max_mld_interp
+# del max_mld_interp
 
-del max_mld_interp
+# =============================================================================
+# 2. Load & Process NEW MLD Data (Climatology)
+# =============================================================================
+print("Loading and interpolating NEW MLD climatology...")
+
+# Load the new MLD dataset
+mld_new = xr.open_dataset("/home/ldelaigue/Documents/Python/AoE_SVD/thesis/post_thesis_submission/DATA/Argo_mixedlayers_monthlyclim_04142022.nc")
+
+# Choose the appropriate variable (e.g., maximum over the year)
+# Let's use mld_da_max which corresponds to the max MLD over each month
+# Then take the overall annual max
+mld_annual_max = mld_new["mld_da_max"].max(dim="iMONTH")  # shape: (iLAT, iLON)
+
+# Rename coordinates to match `ds`
+mld_annual_max = mld_annual_max.rename({"iLAT": "lat", "iLON": "lon"})
+
+# Assign lat/lon values from the dataset
+mld_annual_max = mld_annual_max.assign_coords({
+    "lat": mld_new["lat"].values,
+    "lon": mld_new["lon"].values
+})
+
+# Interpolate to match ds lat/lon grid
+mld_interp = mld_annual_max.interp(lat=ds["lat"], lon=ds["lon"], method="nearest")
+
+# Assign interpolated MLD to the main dataset
+ds["MLD"] = mld_interp
+
+# Clean up
+del mld_new, mld_annual_max, mld_interp
+
+print("New MLD climatology applied.")
 
 # Expand MLD to match the dimensions required for comparison (specifically along the 'pres' dimension)
 MLD_expanded = ds['MLD'].expand_dims({'pres': len(ds['pres'])}, axis=1)
