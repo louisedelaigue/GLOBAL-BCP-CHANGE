@@ -20,6 +20,7 @@
 
 > [!IMPORTANT]  
 > This study is currently under review for publication in Nature Communications.
+> PREPRINT (Version 1) available at Research Square [https://doi.org/10.21203/rs.3.rs-7140275/v1]
 
 <img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
 
