@@ -19,7 +19,7 @@
 *Corresponding author: Louise Delaigue ([louise.delaigue@imev-mer.fr](mailto:louise.delaigue@imev-mer.fr))*
 
 > [!IMPORTANT]  
-> This study is currently under review for publication in Nature Geoscience.
+> This study is currently under review for publication in Nature Communications.
 
 <img src="figs/Figure2a_with_uncertainty.png" width="600" height="400" />
 
