@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15790561.svg)](https://doi.org/10.5281/zenodo.15790561)
 
-## Spatial redistribution of a globally constant marine biological carbon pump
+## Spatial redistribution of a globally stable marine biological carbon pump
 
 #### **L. Delaigue<sup>1, 2</sup>\, R. Sauzède<sup>3</sup>, O. Sulpis<sup>4</sup>, P. W. Boyd<sup>5</sup>, L. D. Talley<sup>6</sup>, H. Claustre<sup>2</sup>, G-J Reichart<sup>1, 7</sup> and M. P. Humphreys<sup>1</sup>**
 
@@ -20,8 +20,7 @@
 *Corresponding author: Louise Delaigue ([louise.delaigue@imev-mer.fr](mailto:louise.delaigue@imev-mer.fr))*
 
 > [!IMPORTANT]  
-> This study is currently under review for publication in Nature Communications.
-> PREPRINT (Version 1) available at Research Square [https://doi.org/10.21203/rs.3.rs-7140275/v1]
+> This study is currently under review for publication in Global Biogeochemical Cycles.
 
 <img src="figs/Figure2.png" width="600" height="400" />
 
