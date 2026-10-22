@@ -16,7 +16,7 @@ In   data/processed/stations/<station>_trends.nc
      data/processed/gccdic_stations/<name>_pixel.nc
      ../data/processing_steps/01A1_O2_product_structural_uncertainty.nc (config.O2_STRUCTURAL)
 Out  data/processed/insitu_vs_gccdic_dicsoft.csv
-     figs/figS_insitu_vs_gccdic_scatter.png
+     ../figs/FigureS11.png
 """
 import sys
 from pathlib import Path
@@ -130,7 +130,7 @@ def main():
     ax.grid(alpha=0.3)
     fig.legend(loc="lower center", bbox_to_anchor=(0.5, 0.1), ncol=4, frameon=False)
     plt.tight_layout(rect=[0, 0.2, 1, 1])
-    fig.savefig(config.FIGS / "figS_insitu_vs_gccdic_scatter.png", dpi=300, bbox_inches="tight")
+    fig.savefig(config.FIGS / "FigureS11.png", dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":

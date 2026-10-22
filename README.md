@@ -59,16 +59,14 @@ Linear trends (μmol kg<sup>−1</sup> yr<sup>−1</sup>, or mol m<sup>−2</sup
 | Notebook | Content |
 |---|---|
 | `Figures and numbers.ipynb` | Figs. 1–7 in manuscript order, and the numbers quoted in the text. Interactive Plotly versions for exploration |
-| `Supplementary_figures.ipynb` | Surface to 1000 m distributions of DIC and TA (Figs. S1–S2) |
-| `Compare_oxygen_products.ipynb` | GOBAI-O<sub>2</sub> vs ML4O<sub>2</sub> O<sub>2</sub> trends, sign disagreement and trend detectability (SI) |
-| `n2_dicsoft_correlation.ipynb` | Sign agreement between N<sup>2</sup> and 0–200 dbar DIC<sub>soft</sub> trends (SI) |
+| `Supplementary_figures.ipynb` | Figs. S1–S14 and Tables S1–S3 in Supporting Information order |
 
 #### Time-series stations: `ocean-time-series-bcp/`
-In situ trends of DIC<sub>total</sub>, DIC<sub>soft</sub>, DIC<sub>carb</sub> and DIC<sub>anth</sub> at seven stations (ALOHA, BATS, CVOO, Iceland Sea, Irminger Sea, K2, KNOT; SPOTS, Lange et al., 2024, plus BATS bottle data) and comparison with GCC-DIC v2.3 (Fig. 4, Table S1 and SI figures). Self-contained, with its own `config.py`, shared module and scripts; see [`ocean-time-series-bcp/README.md`](ocean-time-series-bcp/README.md).
+In situ trends of DIC<sub>total</sub>, DIC<sub>soft</sub>, DIC<sub>carb</sub> and DIC<sub>anth</sub> at seven stations (ALOHA, BATS, CVOO, Iceland Sea, Irminger Sea, K2, KNOT; SPOTS, Lange et al., 2024, plus BATS bottle data) and comparison with GCC-DIC v2.3 (Fig. 4, Figs. S9, S11, S14 and Tables S1–S3). Self-contained, with its own `config.py`, shared module and scripts; see [`ocean-time-series-bcp/README.md`](ocean-time-series-bcp/README.md).
 
 #### Figures
 
-All figures are written to `figs/`.
+All figures are written to `figs/` as `FigureN.png` (main text) and `FigureSN.png` (Supporting Information).
 
 | Figure | Content | Scripts |
 |---|---|---|
@@ -79,6 +77,23 @@ All figures are written to `figs/`.
 | 5 | Physical diagnostics: stratification (N<sup>2</sup>), ventilation (ideal age) and DIC<sub>soft</sub> change by depth band | `06`, `07A`–`C`, `08` |
 | 6 | (a) DIC<sub>soft</sub> sequestered below the winter MLD; (b) change in the 50% sequestration depth | `03`, `04` |
 | 7 | Scenarios of vertical change in DIC<sub>soft</sub> | `01A2`–`05` |
+
+| SI | Content | Source |
+|---|---|---|
+| S1 | O<sub>2</sub> trends (0–1000 m, 2004–2020), GOBAI-O<sub>2</sub> v2.3 vs ML4O<sub>2</sub> | `Supplementary_figures.ipynb` |
+| S2 | Sign disagreement between the two O<sub>2</sub> products | `Supplementary_figures.ipynb` |
+| S3 | −O<sub>2</sub> trend detectability, GOBAI-O<sub>2</sub> (2004–2024) vs ML4O<sub>2</sub> (1965–2020) | `Supplementary_figures.ipynb` |
+| S4, S5 | Annual mean DIC and TA from GCC-DIC at 10, 300, 500 and 1000 m | `Supplementary_figures.ipynb` |
+| S6–S8 | Pressure vs neutral density (γ<sup>n</sup>) diagnostics | available on request* |
+| S9 | Profile selection at the time-series stations | `ocean-time-series-bcp/scripts/01` |
+| S10 | Fig. 4 in neutral density space | available on request* |
+| S11 | In situ vs GCC-DIC ΔDIC<sub>soft</sub> at the stations | `ocean-time-series-bcp/scripts/05` |
+| S12 | Maximum climatological MLD (Holte et al., 2017) | not in this repository |
+| S13 | Sign agreement of N<sup>2</sup> and ΔDIC<sub>soft</sub> trends, 0–200 m | `06`, `07A`, `Supplementary_figures.ipynb` |
+| S14 | ΔDIC<sub>soft</sub> from AOU vs nitrate at the stations | `ocean-time-series-bcp/scripts/07` |
+| Tables S1–S3 | Station periods, 50% sequestration depth trends, nitrate vs AOU residuals | `ocean-time-series-bcp/scripts/09`, `06`, `07` |
+
+\*The analysis is made in pressure space. The neutral density (γ<sup>n</sup>) analysis is computationally heavy and requires large storage, so it is not included here; it is available on request.
 
 ### Data availability
 Input and intermediate files are not included because of GitHub size limits. Processed intermediate files are available from the corresponding author on request. To reproduce, place the inputs below in `data/`; file paths are set at the top of each script.

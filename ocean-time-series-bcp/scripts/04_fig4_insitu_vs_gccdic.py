@@ -5,7 +5,7 @@ Replaces _SPOTS_5_pres_subplots_with_gobai_subsets.py (and the superseded _SPOTS
 and FigureS.ipynb).
 
 In   data/processed/stations/<station>_trends.nc, data/processed/gccdic_stations/<name>.nc
-Out  figs/fig4_insitu_vs_gccdic.png
+Out  ../figs/Figure4.png
 """
 import sys
 from pathlib import Path
@@ -69,7 +69,7 @@ def main():
     fig.legend(handles, labels, loc="center", fontsize=19, ncols=2, frameon=True,
                bbox_to_anchor=((left.x0 + right.x1) / 2, (left.y0 + left.y1) / 2))
     config.FIGS.mkdir(parents=True, exist_ok=True)
-    fig.savefig(config.FIGS / "fig4_insitu_vs_gccdic.png", bbox_inches="tight", dpi=300)
+    fig.savefig(config.FIGS / "Figure4.png", bbox_inches="tight", dpi=300)
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ import os
 ROOT = Path(__file__).resolve().parent
 RAW = ROOT / "data" / "raw"              # inputs we do not produce (not tracked by git)
 PROCESSED = ROOT / "data" / "processed"  # everything the scripts write (not tracked)
-FIGS = ROOT / "figs"
+FIGS = ROOT.parent / "figs"            # main figs/ folder, named as in the paper
 
 SPOTS_CSV = RAW / "spots.csv"                        # Lange et al. (2024)
 BATS_BOTTLE = RAW / "bats_bottle.txt"                # BATS bottle file (BIOS)

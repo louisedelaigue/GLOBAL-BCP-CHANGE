@@ -5,7 +5,7 @@ from GCC-DIC for the seven stations analysed.
 Replaces _SPOTS_01_map_locations.py and _SPOTS_00_verify_pixel_extraction.py.
 
 In   data/raw/spots.csv
-Out  figs/figS_station_map.png
+Out  ../figs/station_map.png (not in the SI)
 """
 import sys
 from pathlib import Path
@@ -50,7 +50,7 @@ def main():
     ax.set_ylim(-90, 90)
     gl = ax.gridlines(draw_labels=True, alpha=0.5)
     gl.top_labels = gl.right_labels = False
-    fig.savefig(config.FIGS / "figS_station_map.png", bbox_inches="tight", dpi=300)
+    fig.savefig(config.FIGS / "station_map.png", bbox_inches="tight", dpi=300)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ Replaces _SPOTS_02_calculate_BGC.py and _SPOTS_03B_pres_check_ranges.py.
 In   data/raw/spots.csv, data/raw/bats_bottle.txt
 Out  data/processed/spots_bgc.csv                (all samples with DIC, TA, O2 and NO3)
      data/processed/spots_bgc_pres_filtered.csv  (profiles spanning each station's pressure window)
-     figs/profile_selection.png                  (SI figure: selected vs rejected samples)
+     ../figs/FigureS9.png                         (SI figure: selected vs rejected samples)
 """
 import sys
 import time
@@ -168,7 +168,7 @@ def plot_selection(df, sel):
     axs[7].legend([h1, h2, h3], ["All data from SPOTS", "Selected for analysis", "Pressure window"],
                   loc="center", fontsize=14)
     fig.tight_layout()
-    fig.savefig(config.FIGS / "profile_selection.png", dpi=300)
+    fig.savefig(config.FIGS / "FigureS9.png", dpi=300)
 
 
 def main():

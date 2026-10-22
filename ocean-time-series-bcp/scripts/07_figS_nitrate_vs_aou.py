@@ -14,7 +14,7 @@ nitrate (in carbon units) and/or changing O2 disequilibrium at subduction.
 In   data/processed/spots_bgc_pres_filtered.csv
 Out  data/processed/stations/<station>_dicsoft_no3_aou.nc
      data/processed/dicsoft_no3_aou_layer_trends.csv     (includes residuals)
-     figs/figS_dicsoft_no3_vs_aou.png                    (residuals not plotted)
+     ../figs/FigureS14.png                               (residuals not plotted)
 """
 import sys
 from pathlib import Path
@@ -107,7 +107,7 @@ def plot(results):
     axs[7].legend(handles, labels, loc="center", fontsize=14, frameon=True)
     axs[7].axis("off")
     plt.subplots_adjust(wspace=0.35, hspace=0.3)
-    fig.savefig(config.FIGS / "figS_dicsoft_no3_vs_aou.png", bbox_inches="tight", dpi=300)
+    fig.savefig(config.FIGS / "FigureS14.png", bbox_inches="tight", dpi=300)
 
 
 def main():

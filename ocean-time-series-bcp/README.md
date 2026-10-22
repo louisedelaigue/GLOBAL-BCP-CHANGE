@@ -19,23 +19,23 @@ bcpts/           shared functions
 scripts/         run in order
 data/raw/        inputs (not tracked)
 data/processed/  everything the scripts write (not tracked)
-figs/            figures (not tracked)
+(figures are written to ../figs/, named as in the paper)
 ```
 
 ## Scripts and figures
 
 | Script | Output | Replaces |
 |---|---|---|
-| `01_build_spots_dataset.py` | SPOTS + BATS samples; profile selection; `figs/profile_selection.png` (SI) | `_SPOTS_02`, `_SPOTS_03B` |
+| `01_build_spots_dataset.py` | SPOTS + BATS samples; profile selection; **Fig. S9** | `_SPOTS_02`, `_SPOTS_03B` |
 | `02_station_trends.py` | interpolated profiles and DIC-component trends per station | `XX_00`–`XX_04` (35 scripts) |
 | `03_gccdic_station_profiles.py` | GCC-DIC trend profiles at each station (±2° box), Fig. 4 | `model_series_notebooks/` (7 notebooks) |
 | `03b_gccdic_nearest_pixel.py` | GCC-DIC v2.3 AOU time series at the pixel nearest each station | new (replaces the v2.1 map) |
 | `04_fig4_insitu_vs_gccdic.py` | **Fig. 4** | `_SPOTS_5`, `_SPOTS_4_pres`, `FigureS.ipynb` |
-| `05_figS_insitu_vs_gccdic_scatter.py` | SI scatter, in situ vs GCC-DIC v2.3 DIC<sub>soft</sub> over the same pressure range | `_SPOTS_6_…_umolkgyr` |
-| `06_sequestration_depths.py` | trends in the DIC<sub>soft</sub> 50% sequestration depth per station | `_SPOTS_7`, `XX_05` (7 scripts) |
-| `07_figS_nitrate_vs_aou.py` | SI figure + table, nitrate- vs AOU-based DIC<sub>soft</sub> (R1 comment 4) | `_SPOTS_8` |
-| `08_figS_station_map.py` | SI station map with GCC-DIC boxes | `_SPOTS_01`, `_SPOTS_00` |
-| `09_tableS1_station_periods.py` | Table S1: time range, period used and profiles per station, read from the data | typed by hand |
+| `05_figS_insitu_vs_gccdic_scatter.py` | **Fig. S11**: in situ vs GCC-DIC v2.3 DIC<sub>soft</sub> over the same pressure range | `_SPOTS_6_…_umolkgyr` |
+| `06_sequestration_depths.py` | **Table S2**: trends in the DIC<sub>soft</sub> 50% sequestration depth per station | `_SPOTS_7`, `XX_05` (7 scripts) |
+| `07_figS_nitrate_vs_aou.py` | **Fig. S14**, **Table S3**: nitrate- vs AOU-based DIC<sub>soft</sub> (R1 comment 4) | `_SPOTS_8` |
+| `08_figS_station_map.py` | station map with GCC-DIC boxes (`station_map.png`, not in the SI) | `_SPOTS_01`, `_SPOTS_00` |
+| `09_tableS1_station_periods.py` | **Table S1**: time range, period used and profiles per station, read from the data | typed by hand |
 
 ## Running
 
@@ -65,5 +65,5 @@ so results are reproducible.
 | `data/raw/mld_DR003_c1m_reg2.0.nc` | MLD climatology, de Boyer Montégut |
 | `CONTENT_DIC_v2-3.nc`, `CONTENT_AT_v2-3.nc` | GCC-DIC v2.3, in `../data/` of GLOBAL-BCP-CHANGE (or set env var `GCCDIC_DIR`) |
 
-Neutral density (γ<sup>n</sup>) is not needed: the analysis is on pressure, so the MATLAB γ<sup>n</sup> step and the
-γ<sup>n</sup> version of the station pipeline were not carried over to Github.
+The analysis is made in pressure space. The neutral density (γ<sup>n</sup>) analysis (MATLAB γ<sup>n</sup> step and the
+γ<sup>n</sup> version of the station pipeline, Fig. S10) is computationally heavy and requires large storage, so it is not included in this repository; it is available on request.
