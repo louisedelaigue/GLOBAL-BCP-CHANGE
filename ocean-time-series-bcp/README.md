@@ -1,4 +1,4 @@
-# ocean-time-series-bcp
+# Processing of SPOTS in-situ timeseries
 
 In situ validation of the biological carbon pump (BCP) trends in Delaigue et al.,
 *Spatial redistribution of a globally stable marine biological carbon pump* (GBC, in revision).
