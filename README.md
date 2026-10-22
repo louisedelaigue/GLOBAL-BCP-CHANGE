@@ -21,7 +21,7 @@
 
 > [!IMPORTANT]  
 > This study is currently under review for publication in Global Biogeochemical Cycles.
-> PREPRINT (Version 1) available at ESS Open Archive [https://essopenarchive.org/doi/full/10.22541/essoar.15010559/v1]
+> Preprint available at ESS Open Archive [https://essopenarchive.org/doi/full/10.22541/essoar.15010559/v1]
 
 <img src="figs/Figure3.png" width="600" height="400" />
 
