@@ -14,7 +14,7 @@ nitrate (in carbon units) and/or changing O2 disequilibrium at subduction.
 In   data/processed/spots_bgc_pres_filtered.csv
 Out  data/processed/stations/<station>_dicsoft_no3_aou.nc
      data/processed/dicsoft_no3_aou_layer_trends.csv     (includes residuals)
-     ../figs/FigureS14.png                               (residuals not plotted)
+     ../figs/FigureS14.png                               (residual as black dashed line)
 """
 import sys
 from pathlib import Path
@@ -92,6 +92,8 @@ def plot(results):
             m, e = ds[f"{v}_change"], ds[f"{v}_error"]
             ax.plot(m, ds.CTDPRS, color=colour, lw=2, label=label, zorder=2)
             ax.fill_betweenx(ds.CTDPRS, m - e, m + e, color=colour, alpha=0.15, lw=0, zorder=1)
+        ax.plot(ds["residual_change"], ds.CTDPRS, color="k", ls="--", lw=1.5,
+                label="Residual (NO$_3^-$ − AOU)", zorder=3)
         p = ds.CTDPRS.values[np.isfinite(ds["DICsoft_AOU_change"].values)]
         ax.set_ylim(p.max(), 0)
         ax.set_xlim(-FIG_XLIM[station], FIG_XLIM[station])
