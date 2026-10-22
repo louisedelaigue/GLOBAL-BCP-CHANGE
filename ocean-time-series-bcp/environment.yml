@@ -1,0 +1,19 @@
+name: bcp-ts
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - xarray
+  - netcdf4
+  - scipy
+  - scikit-learn
+  - statsmodels
+  - matplotlib
+  - cartopy
+  - gsw
+  - pip
+  - pip:
+      - koolstof
+      - PyCO2SYS

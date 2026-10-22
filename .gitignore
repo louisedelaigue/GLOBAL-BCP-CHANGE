@@ -1,2 +1,11 @@
+# data (too large to track)
 /data/**/*.nc
 /data/GOaS_v1_20211214/
+
+# OS / editor / Python clutter
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+
+# local scratch
+/_to_delete/

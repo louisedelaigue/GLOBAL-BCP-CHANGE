@@ -75,7 +75,7 @@ print("Time conversion complete.")
 #     Using the *exact* polygons/names from the shapefile.
 # =============================================================================
 print("Loading shapefile with geopandas...")
-gdf = gpd.read_file("/remote/unity/bgc-output/DELAIGUE/SOCAT-FLOATS-OSSE/data/ocean_mask/goas_v01.shp")
+gdf = gpd.read_file("data/GOaS_v1_20211214/goas_v01.shp")
 
 # Ensure geographic CRS
 if gdf.crs is None:
