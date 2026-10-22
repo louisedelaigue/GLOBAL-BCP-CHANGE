@@ -8,9 +8,6 @@ interpolated onto pressure, trends of DIC, TA, AOU and nitrate are computed with
 uncertainty, and DIC trends are decomposed into soft-tissue (DIC<sub>soft</sub>), carbonate (DIC<sub>carb</sub>) and
 anthropogenic (DIC<sub>anth</sub>) components. The results are compared with GCC-DIC v2.3.
 
-This repository replaces `ocean-times-series` (~115 scripts and 18 notebooks) with one
-config file, a small shared module and ten scripts. The results are unchanged (see *Verification*).
-
 ## Layout
 
 ```
@@ -69,16 +66,4 @@ so results are reproducible.
 | `CONTENT_DIC_v2-3.nc`, `CONTENT_AT_v2-3.nc` | GCC-DIC v2.3, in `../data/` of GLOBAL-BCP-CHANGE (or set env var `GCCDIC_DIR`) |
 
 Neutral density (γ<sup>n</sup>) is not needed: the analysis is on pressure, so the MATLAB γ<sup>n</sup> step and the
-γ<sup>n</sup> version of the station pipeline were not carried over (they remain in `ocean-times-series`).
-
-## Verification against ocean-times-series
-
-Run on the same inputs (22 Oct 2026):
-
-- Interpolated profiles: identical at all stations (same profiles, dates and pressure grid).
-- Fig. 4 in situ trends: ALOHA, BATS, Iceland Sea, Irminger Sea agree within Monte Carlo noise
-  (≤0.02 µmol kg<sup>−1</sup> yr<sup>−1</sup>). K2, KNOT and CVOO differ by up to 0.22 µmol kg<sup>−1</sup> yr<sup>−1</sup> (upper 500 dbar),
-  because the Fig. 4 files stored in the old repo predate its own current interpolation output:
-  a noise-free trend from the old repo's stored profiles reproduces the new result exactly.
-- Sequestration depths: identical. Nitrate vs AOU table: identical within 0.01.
-- Step 1: 9775 samples, as in the old repo; profiles per station: ALOHA 136, BATS 84, K2 28, KNOT 37, CVOO 5, Iceland Sea 19, Irminger Sea 14.
+γ<sup>n</sup> version of the station pipeline were not carried over to Github.
