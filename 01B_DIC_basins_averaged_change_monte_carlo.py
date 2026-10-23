@@ -93,8 +93,7 @@ else:
 if "name" not in gdf.columns:
     raise ValueError("Expected a 'name' column in shapefile, but it wasn't found.")
 
-# (Optional but recommended) keep only the ocean-basin polygons you listed.
-# Comment this out if you truly want every feature (Mediterranean, Baltic, etc.) as separate output files.
+# Keep only the ocean-basin polygons you listed.
 keep_names = {
     "Southern Ocean",
     "South Atlantic Ocean",
